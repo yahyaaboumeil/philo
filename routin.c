@@ -2,25 +2,28 @@
 
 void    take_forks(t_philo *philo)
 {
+ 
     pthread_mutex_lock(philo->right_fork);
     pthread_mutex_lock(philo->left_fork);
 
     pthread_mutex_lock(&philo->info->write_lock);
-    printf("%ld %d has taken a fork\n", get_time() - philo->info->start_time , philo->id);
-    printf("%ld %d has taken a fork\n", get_time() - philo->info->current_time, philo->id);
+
+    // printf("\033[33m%ld %d has taken a fork 🍴\033[0m\n", get_time() - philo->info->start_time, philo->id);
+    printf("\033[33m%ld %d has taken a fork 🍴\033[0m\n", get_time() - philo->info->start_time , philo->id);
+    printf("\033[33m%ld %d has taken a fork 🍴\033[0m\n", get_time() - philo->info->start_time, philo->id);
     pthread_mutex_unlock(&philo->info->write_lock);
 }
 
 void    eating(t_philo *philo)
 {
     pthread_mutex_lock(&philo->info->write_lock);
-    printf("%s\n", "his eating");
+    printf("\033[32m%ld %d is eating 🍜\033[0m\n", get_time() - philo->info->start_time, philo->id);
     pthread_mutex_unlock(&philo->info->write_lock);
 
     philo->last_meal = get_time();
     philo->meals_eaten++;
 
-    sleep(philo->info->time_to_eate * 1000);
+    usleep(philo->info->time_to_eate * 1000);
     pthread_mutex_unlock(philo->right_fork);
     pthread_mutex_unlock(philo->left_fork);
 }
@@ -28,7 +31,7 @@ void    eating(t_philo *philo)
 void    thinking(t_philo *philo)
 {
     pthread_mutex_lock(&philo->info->write_lock);
-    printf("%s\n", "his thinking\n");
+    printf("\033[34m%ld %d is thinking 🤔\033[0m\n", get_time() - philo->info->start_time, philo->id);
     pthread_mutex_unlock(&philo->info->write_lock);
 
 }
@@ -37,26 +40,27 @@ void    thinking(t_philo *philo)
 void    sleeping(t_philo *philo)
 {
     pthread_mutex_lock(&philo->info->write_lock);
-    printf("%s\n", "his slleping\n");
+    printf("\033[36m%ld %d is sleeping 😴\033[0m\n", get_time() - philo->info->start_time, philo->id);
     pthread_mutex_unlock(&philo->info->write_lock);
 
-    sleep(philo->info->time_to_sleep * 1000);
+    usleep(philo->info->time_to_sleep * 1000);
 }
 
 void    *routine(void *arg)
 {
     t_philo *philo = (t_philo *) arg;
+    int i;
 
-    while (!philo->info->is_same_one_dei)
+    i = 0;
+    while (!philo->info->is_same_one_dei && !philo->info->is_last_meal)
     {   
         if (philo->id % 2 == 0)
-            sleep(1000);
+            usleep(1000);
         take_forks(philo);
         eating(philo);
         thinking(philo);
         sleeping(philo);
     }
-
     return (NULL);
 }
 

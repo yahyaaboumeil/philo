@@ -1,8 +1,8 @@
-CC = cc
+CC = cc -g
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
-SRCS = ft_isdigit.c ft_atoi.c ft_isspace.c  err.c parsing.c routin.c helper.c philo.c
+SRCS = err.c monitor.c parsing.c routin.c helper.c philo.c
 
 
 OBJS = ${SRCS:.c=.o}
@@ -10,12 +10,12 @@ OBJS = ${SRCS:.c=.o}
 NAME = philo 
 
 .c.o:
-	${CC} ${CFLAGS} -c $< -o $@
+	${CC}  -c $< -o $@
 
 all: ${NAME}
 
 ${NAME}: ${OBJS}
-	${CC} ${CFLAGS} $^ -o $@
+	${CC} $^ -o $@
 
 clean:
 	${RM} ${OBJS} 

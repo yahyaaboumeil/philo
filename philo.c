@@ -1,18 +1,22 @@
 #include "philo.h"
+// #include "err.c"
+// #include "helper.c"
+// #include "parsing.c"
+// #include "routin.c"
 
-void    add_back(t_philo **head, t_philo *philo)
+int    add_back(t_philo **head, t_philo *philo)
 {
     t_philo *temp;
     t_philo *new_philo;
     
     if (*head == NULL)
     {
-        *head = creat_philo(philo); 
-        return ;
+        *head = creat_philo(philo);
+        return (*head != NULL);
     }
     new_philo = creat_philo(philo);
     if (!new_philo)
-        return ;
+        return (FALSE);
     temp = *head;
     while (temp->next)    
     {
@@ -27,6 +31,8 @@ t_philo    *creat_philo(t_philo *philo)
 
     new_philo = malloc(sizeof(t_philo));
     new_philo->info = malloc(sizeof(t_info));
+    if (!new_philo || !new_philo->info)
+        return (NULL);
 
     new_philo->info->num_philos = philo->info->num_philos;
     new_philo->info->time_to_dide = philo->info->time_to_dide;
@@ -34,6 +40,10 @@ t_philo    *creat_philo(t_philo *philo)
     new_philo->info->time_to_sleep = philo->info->time_to_sleep;
     new_philo->info->start_time = get_time();
     new_philo->info->must_eate_counter = philo->info->must_eate_counter;
+    new_philo->left_fork = malloc(sizeof(pthread_mutex_t));
+    new_philo->right_fork = malloc(sizeof(pthread_mutex_t));
+    if (!new_philo->left_fork || !new_philo->right_fork)
+        return (NULL);
     new_philo->next = NULL;
 
     return (new_philo);
@@ -50,7 +60,8 @@ t_philo    *list_of_philo(t_philo *philo)
     head = NULL;
     while (i < philo->info->num_philos)
     {
-        add_back(&head, philo);
+        if (!add_back(&head, philo))
+            return (head);
         i++;
     }
     i = 0;
@@ -59,6 +70,7 @@ t_philo    *list_of_philo(t_philo *philo)
     {
         temp->id = i+1; 
         temp = temp->next;
+        i++;
     }
     return (head);
 }
@@ -70,10 +82,25 @@ void    run_threads(t_philo *philos)
     temp = philos;
     while (temp)
     {
-        if (!pthread_create(&temp->tread, NULL, &routine, temp))
+        if (pthread_create(&temp->tread, NULL, &routine, temp))
         {
             perror("pthread_create");
         }
+        usleep(100);
+        temp = temp->next; 
+    }
+}
+
+
+void    run_monitor(t_philo *philos)
+{
+    t_philo *temp;
+
+    temp = philos;
+    while (temp)
+    {
+        if (pthread_create(&temp->tread, NULL, &monitor, temp))
+            perror("pthread_create");
         temp = temp->next; 
     }
 }
@@ -91,32 +118,44 @@ void    wait_for_treads(t_philo *philos)
         }
         temp = temp->next;
     }
+
 }
 
 int    philo(int ac, char  **av)
 {
+    int     status;
     t_philo  *philos;
 
-    philos = NULL;
-    if (ac  == 4)
-    {
-        if (!pargsing(av, THRENUMBER))
-            return (print_parsing_err(), 0);
-        save_data_to_strcut(philos->info, av, THRENUMBER);
-        philos = list_of_philo(philos);
-        creat_philo(philos);
-        wait_for_treads(philos);
-    }
-    else if (ac == 5)
-    {
-        if (!pargsing(av, FORNUMBER))
-            return (print_parsing_err(),1);
-        printf("valide input : \n"); 
-    }
+    philos = malloc(sizeof(t_philo));
+    philos->info = malloc(sizeof(t_info));
+    if (!philos || !philos->info)
+        return (0);
+    if (ac == 5)
+        status = pargsing(av, FORNUMBER);
+    else 
+        status = pargsing(av, FIVENUMBER);
+    if (status == FALSE)
+        return (print_parsing_err(), 0);
+    if (ac == 5)
+        save_data_to_strcut(philos->info, av, FORNUMBER);
+    else
+        save_data_to_strcut(philos->info, av, FIVENUMBER);
+    philos = list_of_philo(philos);
+    creat_philo(philos);
+    run_threads(philos);
+    run_monitor(philos);
+    wait_for_treads(philos);
+    free_meme(philos);
     return (1);
 }
 
 int main(int ac, char **av)
 {
-    philo(ac, av);
+    ac = 5;
+    av[1] = "4";
+    av[2] = "33";
+    av[3] = "33";
+    av[4] = "33";
+    if (ac == 6 || ac == 5)
+        philo(ac, av);
 }
