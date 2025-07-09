@@ -26,7 +26,7 @@ typedef struct t_info
     int             is_last_meal;
 	pthread_mutex_t	write_lock;
 	pthread_mutex_t	*forks;
-	// t_philo         *philo;
+	struct t_philo         *philo;
 }					t_info;
 
 typedef struct t_philo

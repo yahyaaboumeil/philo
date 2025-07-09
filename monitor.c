@@ -4,22 +4,27 @@
 
 void	*monitor(void *arg)
 {
-	t_philo *philo;
-	t_philo	*temp;
+	t_info *philo;
+	t_info	*temp;
 
-	philo = (t_philo *)arg;
+	philo = (t_info *)arg;
 	while (1)
 	{
 		temp = philo;
-		while (temp)
+		temp->philo = philo->philo;
+		while (temp->philo)
 		{
-			if (check_is_dei(philo) && !philo->info->is_same_one_dei)
+			if (check_is_dei(temp->philo))
 			{
-				pthread_mutex_lock(&philo->info->write_lock);
-				printf("\033[1;31m%ld %d died ☠️\033[0m\n", get_time() - philo->info->start_time,
-					philo->id);
-				philo->info->is_same_one_dei = TRUE;
-				pthread_mutex_unlock(&philo->info->write_lock);
+				pthread_mutex_lock(&temp->write_lock);
+				if (!temp->is_same_one_dei)
+				{
+					printf("\033[1;31m%ld %d died ☠️\033[0m\n", get_time() - temp->start_time,
+						temp->philo->id);
+					temp->is_same_one_dei = TRUE;
+					return (NULL);
+				}
+				pthread_mutex_unlock(&temp->write_lock);
 				return (NULL);
 			}
 			// if (check_is_dei(philo))
@@ -31,7 +36,7 @@ void	*monitor(void *arg)
 			// 	philo->info->is_same_one_dei = TRUE;
 			// 	return (NULL);
 			// }
-			temp = temp->next;
+			temp->philo = temp->philo->next;
 		}
 	}
  	return (NULL);

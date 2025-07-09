@@ -1,5 +1,5 @@
-CC = cc -g
-CFLAGS = -Wall -Wextra -Werror
+CC = cc -g -pthread 
+CFLAGS = -Wall -Wextra -Werror 
 RM = rm -f
 
 SRCS = err.c monitor.c parsing.c routin.c helper.c philo.c

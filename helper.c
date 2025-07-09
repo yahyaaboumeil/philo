@@ -42,6 +42,7 @@ int	ft_atoi(const char *nptr)
 
 int check_is_dei(t_philo *philo)
 {
+	// printf("time - last = %d\n", (get_time() - philo->last_meal));
     return ((get_time() - philo->last_meal) > philo->info->time_to_dide);
 }
 

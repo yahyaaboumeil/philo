@@ -7,6 +7,7 @@
 // #include "routin.c"
 
 void	run_monitor(t_philo *philos);
+
 int	add_back(t_philo **head, t_philo *philo)
 {
 	t_philo	*temp;
@@ -68,10 +69,13 @@ t_philo	*list_of_philo(t_philo *philo)
 	temp = head;
 	while (i < philo->info->num_philos)
 	{
+        temp->info = philo->info;
+        temp->info->philo = head;
 		temp->id = i + 1;
 		temp = temp->next;
 		i++;
 	}
+
 	return (head);
 }
 
@@ -87,7 +91,6 @@ void	run_threads(t_philo *philos)
 		usleep(1000);
 		temp = temp->next;
 	}
-    run_monitor(philos);
 }
 
 void	run_monitor(t_philo *philos)
@@ -95,12 +98,9 @@ void	run_monitor(t_philo *philos)
 	t_philo	*temp;
 
 	temp = philos;
-	while (temp)
-	{
-		if (pthread_create(&temp->tread, NULL, &monitor, temp))
-			perror("pthread_create");
-		temp = temp->next;
-	}
+	if (pthread_create(&temp->tread, NULL, &monitor, temp->info))
+		perror("pthread_create");
+	temp = temp->next;
 }
 
 void	wait_for_treads(t_philo *philos)
@@ -121,7 +121,7 @@ void	wait_for_treads(t_philo *philos)
 int	philo(int ac, char **av)
 {
 	int		status;
-	t_philo	*philos;
+    t_philo *philos;
 
 	if (ac == 5)
 		status = pargsing(av, FORNUMBER);
@@ -140,7 +140,7 @@ int	philo(int ac, char **av)
 	philos = list_of_philo(philos);
 	creat_philo(philos);
 	run_threads(philos);
-	// run_monitor(philos);
+	run_monitor(philos);
 	wait_for_treads(philos);
 	free_meme(philos);
 	return (1);
@@ -148,11 +148,11 @@ int	philo(int ac, char **av)
 
 int	main(int ac, char **av)
 {
-    // ac = 5;
-    // av[1] = "5";
-    // av[2] = "800";
-    // av[3] = "200";
-    // av[4] = "200"; 
+	// ac = 5;
+	// av[1] = "5";
+	// av[2] = "100";
+	// av[3] = "200";
+	// av[4] = "200";
 	if (ac == 6 || ac == 5)
 		philo(ac, av);
 }
