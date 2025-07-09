@@ -39,6 +39,8 @@ t_info    *save_data_to_strcut(t_info *info, char **av, int type)
     info->time_to_dide = ft_atoi(av[2]);
     info->time_to_eate = ft_atoi(av[3]);
     info->time_to_sleep = ft_atoi(av[4]);
+    info->is_last_meal = FALSE;
+    info->is_same_one_dei = FALSE;
     info->start_time = get_time();
     if (type == FIVENUMBER)
         info->must_eate_counter = ft_atoi(av[5]);

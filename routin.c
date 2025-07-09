@@ -52,7 +52,7 @@ void    *routine(void *arg)
     int i;
 
     i = 0;
-    while (!philo->info->is_same_one_dei && !philo->info->is_last_meal)
+    while (!philo->info->is_same_one_dei)
     {   
         if (philo->id % 2 == 0)
             usleep(1000);

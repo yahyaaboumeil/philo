@@ -42,13 +42,13 @@ int	ft_atoi(const char *nptr)
 
 int check_is_dei(t_philo *philo)
 {
-    return ((get_time() - philo->last_meal) >= philo->info->time_to_dide);
+    return ((get_time() - philo->last_meal) > philo->info->time_to_dide);
 }
 
 int check_number_of_meals(t_philo *philo)
 {
     if (philo->info->must_eate_counter != -1)
-        return (philo->info->must_eate_counter > philo->meals_eaten);
+        return (philo->info->must_eate_counter == philo->meals_eaten);
     return (FALSE);
 }
 
