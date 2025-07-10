@@ -42,8 +42,20 @@ int	ft_atoi(const char *nptr)
 
 int check_is_dei(t_philo *philo)
 {
-	// printf("time - last = %d\n", (get_time() - philo->last_meal));
-    return ((get_time() - philo->last_meal) > philo->info->time_to_dide);
+	size_t n;
+	int	result;
+
+	result = 0;
+	pthread_mutex_lock(&philo->info->eate_lock);
+	n = get_time() - philo->last_meal;
+	pthread_mutex_unlock(&philo->info->eate_lock);
+//	printf("id %d : n = %ld, get_time = %ld, last_meal = %ld\n",philo->id, n , get_time(), philo->last_meal);
+	// printf("time : %ld\n", get_time() - philoVlast_meal);
+
+	pthread_mutex_lock(&philo->info->eate_lock);
+    result = (n > philo->info->time_to_dide);
+	pthread_mutex_unlock(&philo->info->eate_lock);
+	return (result);
 }
 
 int check_number_of_meals(t_philo *philo)
@@ -53,12 +65,12 @@ int check_number_of_meals(t_philo *philo)
     return (FALSE);
 }
 
-long    get_time()
+size_t    get_time()
 {
     struct timeval tv;
 
     gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000L + tv.tv_usec / 1000);
+    return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
 

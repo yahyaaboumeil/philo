@@ -25,6 +25,8 @@ typedef struct t_info
 	long			start_time;
     int             is_last_meal;
 	pthread_mutex_t	write_lock;
+	pthread_mutex_t	die_lock;
+	pthread_mutex_t eate_lock; 
 	pthread_mutex_t	*forks;
 	struct t_philo         *philo;
 }					t_info;
@@ -33,7 +35,7 @@ typedef struct t_philo
 {
 	int				id;
 	int				meals_eaten;
-	long			last_meal;
+	size_t			last_meal;
 	pthread_t		tread;
 	pthread_t		monitor_th;
 	pthread_mutex_t	*left_fork;
@@ -47,12 +49,13 @@ void				free_meme(t_philo *philo);
 int					check_is_dei(t_philo *philo);
 int					check_number_of_meals(t_philo *philo);
 
-t_philo				*creat_philo(t_philo *philo);
-int					add_back(t_philo **head, t_philo *philo);
+// t_philo				*creat_philo(t_philo *philo);
+// int					add_back(t_philo **head, t_philo *philo);
 t_info				*save_data_to_strcut(t_info *info, char **av, int type);
 void				*routine(void *arg);
-long				get_time(void);
+size_t				get_time(void);
 
+void    print_action(t_philo *philo, char *messag);
 int					ft_isspace(int c);
 int					ft_isdigit(int c);
 int					ft_atoi(const char *nptr);

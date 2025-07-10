@@ -33,6 +33,20 @@ int    pargsing(char **av, int type)
     return (TRUE);
 }
 
+void	init_forks(t_info *info)
+{
+	int	i;
+
+	info->forks = malloc(sizeof(pthread_mutex_t ) * info->num_philos);
+	i = 0;
+	while (i < info->num_philos)
+	{
+		pthread_mutex_init(&info->forks[i], NULL);
+		i++;
+	}
+
+}
+
 t_info    *save_data_to_strcut(t_info *info, char **av, int type)
 {
     info->num_philos = ft_atoi(av[1]);
@@ -42,6 +56,10 @@ t_info    *save_data_to_strcut(t_info *info, char **av, int type)
     info->is_last_meal = FALSE;
     info->is_same_one_dei = FALSE;
     info->start_time = get_time();
+    init_forks(info);
+	pthread_mutex_init(&info->eate_lock, NULL);
+	pthread_mutex_init(&info->die_lock, NULL);
+	pthread_mutex_init(&info->write_lock, NULL);
     if (type == FIVENUMBER)
         info->must_eate_counter = ft_atoi(av[5]);
     else

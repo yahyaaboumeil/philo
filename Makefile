@@ -1,4 +1,4 @@
-CC = cc -g -pthread 
+CC = cc -g -O0 -pthread -lpthread 
 CFLAGS = -Wall -Wextra -Werror 
 RM = rm -f
 

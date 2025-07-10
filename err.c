@@ -9,8 +9,6 @@ void	free_meme(t_philo *philo)
 	{
 		philo = philo->next;
 		free(temp->info);
-		free(temp->left_fork);
-		free(temp->right_fork);
 		free(temp);
 		temp = philo;
 	}
