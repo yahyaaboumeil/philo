@@ -62,7 +62,5 @@ void	print_action(t_philo *philo, char *messag)
 		pthread_mutex_unlock(&philo->info->write_lock);
 	}
 	else
-	{
 		pthread_mutex_unlock(&philo->info->die_lock);
-	}
 }
