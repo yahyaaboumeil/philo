@@ -1,8 +1,8 @@
-CC = cc -g -O0 -pthread -lpthread 
+CC = cc -g -O0 -pthread 
 CFLAGS = -Wall -Wextra -Werror 
 RM = rm -f
 
-SRCS = err.c monitor.c parsing.c routin.c helper.c philo.c
+SRCS = helper2.c monitor.c utils.c parsing.c routin.c helper.c philo.c
 
 
 OBJS = ${SRCS:.c=.o}

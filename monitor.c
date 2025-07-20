@@ -1,74 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   monitor.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaboumei <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/12 20:57:33 by yaboumei          #+#    #+#             */
+/*   Updated: 2025/07/12 20:57:36 by yaboumei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-
-// void	*monitor(void *arg)
-// {
-// 	t_info *philo;
-// 	t_info	*temp;
-
-// 	philo = (t_info *)arg;
-// 	while (1)
-// 	{
-// 		temp = philo;
-// 		temp->philo = philo->philo;
-// 		while (temp->philo)
-// 		{
-// 			if (check_is_dei(temp->philo))
-// 			{
-// 				printf("\033[1;31m%ld %d died ☠️\033[0m\n", get_time() - temp->start_time,
-// 				temp->philo->id);
-// 				pthread_mutex_lock(&temp->die_lock);	
-// 				temp->is_same_one_dei = TRUE;
-// 				pthread_mutex_unlock(&temp->die_lock);	
-// 				return (NULL);
-// 			}
-// 			// if (check_is_dei(philo))
-// 			// {
-// 				// 	pthread_mutex_lock(&philo->info->write_lock);
-// 				// 	printf("\033[1;31m%ld %d died ☠️\033[0m\n", get_time() - philo->info->start_time,
-// 				// 		philo->id);
-// 				// 	pthread_mutex_unlock(&philo->info->write_lock);
-// 				// 	philo->info->is_same_one_dei = TRUE;
-// 				// 	return (NULL);
-// 				// }
-// 				temp->philo = temp->philo->next;
-// 			}
-// 			usleep(1000);
-// 	}
-//  	return (NULL);
-//  }
-
-void *monitor(void *arg)
+int	norminett(int *i, t_info *info)
 {
-	t_info	*info = (t_info *)arg;
-	int	i;
+	while (*i < info->num_philos)
+	{
+		if (check_number_of_meals(info))
+		{
+			pthread_mutex_lock(&info->lastmeal_lock);
+			info->is_last_meal = TRUE;
+			pthread_mutex_unlock(&info->lastmeal_lock);
+			return (FALSE);
+		}
+		(*i)++;
+	}
+	return (TRUE);
+}
 
+void	*monitor(void *arg)
+{
+	t_info	*info;
+	int		i;
+
+	info = (t_info *)arg;
 	i = 0;
 	while (1)
 	{
-		i = 0;
-		while (i < info->num_philos)
+		pthread_mutex_lock(&info->die_lock);
+		if (info->is_same_one_dei)
 		{
-			// pthread_mutex_lock(&info->die_lock);
-			// if (info->is_same_one_dei)
-			// {
-			// 	pthread_mutex_unlock(&info->die_lock);
-			// 	return (NULL); // Stop monitoring if someone already died
-			// }
-			// pthread_mutex_unlock(&info->die_lock);
-
-			int n = check_is_dei(&info->philo[i]);
-			if (n == 1)
-			{
-				print_action(&info->philo[i], "\033[1;31m%ld %d died️\033[0m\n");
-				pthread_mutex_lock(&info->die_lock);
-				info->is_same_one_dei = TRUE;
-				pthread_mutex_unlock(&info->die_lock);
-				return (NULL);
-			}
-			i++;
+			pthread_mutex_unlock(&info->die_lock);
+			return (NULL);
 		}
-		usleep(1000); 
+		pthread_mutex_unlock(&info->die_lock);
+		i = 0;
+		if (!norminett(&i, info))
+			return (NULL);
+		usleep(1000);
 	}
 	return (NULL);
 }
