@@ -53,18 +53,10 @@ void	ft_usleep_interruptible(t_philo *philo, long start, long milli)
 			pthread_mutex_unlock(&(philo->info->die_lock));
 			return ;
 		}
-		pthread_mutex_unlock(&(philo->info->die_lock));
-		if (check_is_dei(philo))
-		{
-			print_action(philo, "%ld %d died️\n");
-			pthread_mutex_lock(&philo->info->die_lock);
-			philo->info->is_same_one_dei = TRUE;
-			pthread_mutex_unlock(&philo->info->die_lock);
-			return ;
-		}
-		if ((now - start) >= milli)
-			break ;
-		usleep(300);
+	   pthread_mutex_unlock(&(philo->info->die_lock));
+	   if ((now - start) >= milli)
+		   break ;
+	   usleep(300);
 	}
 	return ;
 }

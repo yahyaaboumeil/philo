@@ -28,6 +28,26 @@ int	norminett(int *i, t_info *info)
 	return (TRUE);
 }
 
+int	norminett2(t_info *info)
+{
+	t_philo *philos = info->philo;
+
+	for (int i = 0; i < info->num_philos; i++)
+	{
+		pthread_mutex_lock(&info->eate_lock);
+		long time_since_last_meal = get_time() - philos[i].last_meal;
+		pthread_mutex_unlock(&info->eate_lock);
+		if (time_since_last_meal >= info->time_to_dide)
+		{
+			print_action(&philos[i], "%ld %d died\n");
+			pthread_mutex_lock(&info->die_lock);
+			info->is_same_one_dei = TRUE;
+			pthread_mutex_unlock(&info->die_lock);
+			return (TRUE);
+		}
+	}
+	return (FALSE);
+}
 void	*monitor(void *arg)
 {
 	t_info	*info;
@@ -44,10 +64,11 @@ void	*monitor(void *arg)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&info->die_lock);
+		if (norminett2(info))
 		i = 0;
 		if (!norminett(&i, info))
 			return (NULL);
-		usleep(1000);
+	   usleep(100);
 	}
 	return (NULL);
 }

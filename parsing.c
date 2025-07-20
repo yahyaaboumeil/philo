@@ -67,6 +67,7 @@ t_info	*save_data_to_strcut(t_info *info, char **av, int type)
 	info->count_eaten = 0;
 	info->count_how_many_philo_eat = 0;
 	init_forks(info);
+	pthread_mutex_init(&info->lastmeal_lock, NULL); // Fix: initialize lastmeal_lock
 	pthread_mutex_init(&info->eate_lock, NULL);
 	pthread_mutex_init(&info->die_lock, NULL);
 	pthread_mutex_init(&info->write_lock, NULL);
@@ -85,7 +86,7 @@ void	full_arr(t_philo *philo)
 	while (i < philo[0].info->num_philos)
 	{
 		philo[i].id = i + 1;
-		philo[i].last_meal = 0;
+		philo[i].last_meal = get_time();
 		philo[i].meals_eaten = 0;
 		philo[i].info = philo[0].info;
 		philo[i].info->philo = &philo[0];
