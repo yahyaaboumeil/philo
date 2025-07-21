@@ -90,8 +90,10 @@ void	thinking(t_philo *p)
 	if (budget > p->info->time_to_eate)
 		budget = p->info->time_to_eate;
 	think_time = budget / 2;
-	ft_usleep_interruptible(p, get_time(), think_time);
+	if (p->info->time_to_eate > p->info->time_to_sleep)
+		think_time = p->info->time_to_eate * 2 - p->info->time_to_sleep;
 	print_action(p, "%ld %d is thinking\n");
+	ft_usleep_interruptible(p, get_time(), think_time);
 }
 
 void	sleeping(t_philo *philo)

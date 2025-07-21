@@ -67,7 +67,7 @@ t_info	*save_data_to_strcut(t_info *info, char **av, int type)
 	info->count_eaten = 0;
 	info->count_how_many_philo_eat = 0;
 	init_forks(info);
-	pthread_mutex_init(&info->lastmeal_lock, NULL); // Fix: initialize lastmeal_lock
+	pthread_mutex_init(&info->lastmeal_lock, NULL);
 	pthread_mutex_init(&info->eate_lock, NULL);
 	pthread_mutex_init(&info->die_lock, NULL);
 	pthread_mutex_init(&info->write_lock, NULL);

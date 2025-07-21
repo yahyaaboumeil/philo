@@ -30,12 +30,16 @@ int	norminett(int *i, t_info *info)
 
 int	norminett2(t_info *info)
 {
-	t_philo *philos = info->philo;
+	t_philo	*philos;
+	long	time_since_last_meal;
+	int		i;
 
-	for (int i = 0; i < info->num_philos; i++)
+	i = -1;
+	philos = info->philo;
+	while (++i < info->num_philos)
 	{
 		pthread_mutex_lock(&info->eate_lock);
-		long time_since_last_meal = get_time() - philos[i].last_meal;
+		time_since_last_meal = get_time() - philos[i].last_meal;
 		pthread_mutex_unlock(&info->eate_lock);
 		if (time_since_last_meal >= info->time_to_dide)
 		{
@@ -48,6 +52,7 @@ int	norminett2(t_info *info)
 	}
 	return (FALSE);
 }
+
 void	*monitor(void *arg)
 {
 	t_info	*info;
@@ -65,10 +70,10 @@ void	*monitor(void *arg)
 		}
 		pthread_mutex_unlock(&info->die_lock);
 		if (norminett2(info))
-		i = 0;
+			i = 0;
 		if (!norminett(&i, info))
 			return (NULL);
-	   usleep(100);
+		usleep(100);
 	}
 	return (NULL);
 }
