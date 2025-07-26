@@ -14,11 +14,6 @@
 void	take_forks(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->info->die_lock);
-	if (philo->info->is_same_one_dei || philo->info->is_last_meal)
-	{
-		pthread_mutex_unlock(&philo->info->die_lock);
-		return ;
-	}
 	pthread_mutex_unlock(&philo->info->die_lock);
 	if (philo->id % 2)
 	{
@@ -105,11 +100,7 @@ void	sleeping(t_philo *philo)
 		return ;
 	}
 	pthread_mutex_unlock(&philo->info->die_lock);
-	pthread_mutex_lock(&philo->info->eate_lock);
-	if (!(philo->info->must_eate_counter != -1
-			&& philo->info->count_eaten == philo->info->must_eate_counter))
-		print_action(philo, "%ld %d is sleeping\n");
-	pthread_mutex_unlock(&philo->info->eate_lock);
+	print_action(philo, "%ld %d is sleeping\n");
 	ft_usleep_interruptible(philo, get_time(), philo->info->time_to_sleep);
 }
 

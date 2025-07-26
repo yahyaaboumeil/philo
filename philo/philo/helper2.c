@@ -56,7 +56,7 @@ void	ft_usleep_interruptible(t_philo *philo, long start, long milli)
 		pthread_mutex_unlock(&(philo->info->die_lock));
 		if ((now - start) >= milli)
 			break ;
-		usleep(300);
+		usleep(200);
 	}
 	return ;
 }

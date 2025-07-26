@@ -12,18 +12,18 @@
 
 #include "philo.h"
 
-int	check_is_dei(t_philo *philo)
-{
-	size_t	n;
-	int		result;
+// int	check_is_dei(t_philo *philo)
+// {
+// 	size_t	n;
+// 	int		result;
 
-	result = 0;
-	pthread_mutex_lock(&philo->info->eate_lock);
-	n = get_time() - philo->last_meal;
-	result = (n >= philo->info->time_to_dide);
-	pthread_mutex_unlock(&philo->info->eate_lock);
-	return (result);
-}
+// 	result = 0;
+// 	pthread_mutex_lock(&philo->info->eate_lock);
+// 	n = get_time() - philo->last_meal;
+// 	result = (n >= philo->info->time_to_dide);
+// 	pthread_mutex_unlock(&philo->info->eate_lock);
+// 	return (result);
+// }
 
 int	check_number_of_meals(t_info *info)
 {

@@ -53,14 +53,10 @@ int	ft_atoi(const char *nptr)
 
 void	print_action(t_philo *philo, char *messag)
 {
+	pthread_mutex_lock(&philo->info->write_lock);
 	pthread_mutex_lock(&philo->info->die_lock);
 	if (!philo->info->is_same_one_dei)
-	{
-		pthread_mutex_unlock(&philo->info->die_lock);
-		pthread_mutex_lock(&philo->info->write_lock);
 		printf(messag, get_time() - philo->info->start_time, philo->id);
-		pthread_mutex_unlock(&philo->info->write_lock);
-	}
-	else
-		pthread_mutex_unlock(&philo->info->die_lock);
+	pthread_mutex_unlock(&philo->info->die_lock);
+	pthread_mutex_unlock(&philo->info->write_lock);
 }

@@ -12,20 +12,23 @@
 
 #include "philo.h"
 
-int	norminett(int *i, t_info *info)
+int	norminett(t_info *info)
 {
-	while (*i < info->num_philos)
+	int	i;
+
+	i = 0;
+	while (i < info->num_philos)
 	{
 		if (check_number_of_meals(info))
 		{
-			pthread_mutex_lock(&info->lastmeal_lock);
-			info->is_last_meal = TRUE;
-			pthread_mutex_unlock(&info->lastmeal_lock);
-			return (FALSE);
+			pthread_mutex_lock(&info->die_lock);
+			info->is_same_one_dei = TRUE;
+			pthread_mutex_unlock(&info->die_lock);
+			return (TRUE);
 		}
-		(*i)++;
+		i++;
 	}
-	return (TRUE);
+	return (FALSE);
 }
 
 int	norminett2(t_info *info)
@@ -56,10 +59,8 @@ int	norminett2(t_info *info)
 void	*monitor(void *arg)
 {
 	t_info	*info;
-	int		i;
 
 	info = (t_info *)arg;
-	i = 0;
 	while (1)
 	{
 		pthread_mutex_lock(&info->die_lock);
@@ -70,10 +71,10 @@ void	*monitor(void *arg)
 		}
 		pthread_mutex_unlock(&info->die_lock);
 		if (norminett2(info))
-			i = 0;
-		if (!norminett(&i, info))
 			return (NULL);
-		usleep(100);
+		if (norminett(info))
+			return (NULL);
+		usleep(200);
 	}
 	return (NULL);
 }

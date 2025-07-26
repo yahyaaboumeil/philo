@@ -26,6 +26,7 @@
 
 typedef struct t_info
 {
+	int				i_looked;
 	int				num_philos;
 	int				time_to_dide;
 	int				time_to_eate;

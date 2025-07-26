@@ -33,7 +33,7 @@ int	pargsing(char **av, int type)
 	int	i;
 
 	i = 1;
-	while (i < type)
+	while (i <= type)
 	{
 		if (!check_is_number(av[i]))
 			return (FALSE);
@@ -65,6 +65,7 @@ t_info	*save_data_to_strcut(t_info *info, char **av, int type)
 	info->is_same_one_dei = FALSE;
 	info->start_time = get_time();
 	info->count_eaten = 0;
+	info->i_looked = 0;
 	info->count_how_many_philo_eat = 0;
 	init_forks(info);
 	pthread_mutex_init(&info->lastmeal_lock, NULL);
